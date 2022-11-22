@@ -82,4 +82,9 @@ public class LicenseController {
                 )
         );
     }
+
+    @GetMapping("/hello")
+    public String getHello(@PathVariable("organizationId") String organizationId) {
+        return "Hello, " + organizationId;
+    }
 }
