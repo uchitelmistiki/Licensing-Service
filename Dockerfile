@@ -8,4 +8,4 @@ VOLUME /tmp
 COPY --from=build app/target/licensing-service.jar /app-service/licensing-service.jar
 WORKDIR /app-service
 EXPOSE 8081  
-ENTRYPOINT ["java","-jar","/usr/app/licensing-service.jar"]
+ENTRYPOINT ["java","-jar","/app-service/licensing-service.jar"]
