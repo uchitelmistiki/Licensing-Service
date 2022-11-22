@@ -25,6 +25,7 @@ public class LicenseController {
     ) {
         License license = licenseService.getLicense(licenseId, organizationId);
 
+        /*
         license.add(
                 linkTo(methodOn(LicenseController.class)
                         .getLicense(organizationId, license.getLicenseId()))
@@ -39,6 +40,8 @@ public class LicenseController {
                         .deleteLicense(organizationId, license.getLicenseId()))
                         .withRel("deleteLicense")
         );
+
+         */
 
         return ResponseEntity.ok(license);
     }
