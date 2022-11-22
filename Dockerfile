@@ -4,6 +4,6 @@ RUN mvn clean package
 
 FROM openjdk:17.0.1-jdk-slim 
 VOLUME /tmp
-COPY --from=build /usr/src/app/target/licensing-service.jar /usr/app/licensing-service.jar  
+COPY --from=build ./target/licensing-service.jar licensing-service.jar
 EXPOSE 8081  
 ENTRYPOINT ["java","-jar","/usr/app/licensing-service.jar"]
