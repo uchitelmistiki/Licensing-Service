@@ -1,23 +1,10 @@
-# шаг 1
-# Базовый образ, содержащий среду Java времени выполнения
-FROM openjdk:17.0.1-jdk-slim as build
-# Добавить информацию о владельце
-LABEL maintainer="Illary Huaylupo <illaryhs@gmail.com>"
-# Файл jar приложения
-ARG JAR_FILE
-# Добавить файл jar приложения в контейнер
-COPY ${JAR_FILE} app.jar
-# распаковать файл jar
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf /app.jar)
-# шаг 2
-# Та же среда Java времени выполнения
-FROM openjdk:17.0.1-jdk-slim
-# Добавить том, ссылающийся на каталог /tmp
+FROM maven:3.8.4-openjdk-17 AS build  
+COPY src /usr/src/app/src  
+COPY pom.xml /usr/src/app  
+RUN mvn -f /usr/src/app/pom.xml clean package
+
+FROM openjdk:17.0.1-jdk-slim 
 VOLUME /tmp
-# Скопировать распакованное приложение в новый контейнер
-ARG DEPENDENCY=/target/dependency
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-# запустить приложение
-ENTRYPOINT ["java","-cp","app:app/lib/*","com.optimagrowth.license.LicenseServiceApplication"]
+COPY --from=build /usr/src/app/target/licensing-service.jar /usr/app/licensing-service.jar  
+EXPOSE 8081  
+ENTRYPOINT ["java","-jar","/usr/app/licensing-service.jar"]  
