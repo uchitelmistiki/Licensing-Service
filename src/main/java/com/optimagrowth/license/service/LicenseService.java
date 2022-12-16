@@ -3,13 +3,17 @@ package com.optimagrowth.license.service;
 import com.optimagrowth.license.config.ServiceConfig;
 import com.optimagrowth.license.model.License;
 import com.optimagrowth.license.repository.LicenseRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
+import javax.persistence.EntityManagerFactory;
 
 @Service
+@Slf4j
 public class LicenseService {
 
     @Autowired
@@ -21,17 +25,14 @@ public class LicenseService {
     @Autowired
     private ServiceConfig config;
 
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
 
+    @Transactional
+    @CircuitBreaker(name = "licenseService")
     public License getLicense(Long licenseId, String organizationId) {
-        License license = licenseRepository
+        return licenseRepository
                 .findByOrganizationIdAndId(organizationId, licenseId);
-        if (Objects.isNull(license)) {
-            throw new IllegalArgumentException(
-                    String.format(messages.getMessage(
-                                    "license.search.error.message", null, null),
-                            licenseId, organizationId));
-        }
-        return license;
     }
 
     public License createLicense(License license) {

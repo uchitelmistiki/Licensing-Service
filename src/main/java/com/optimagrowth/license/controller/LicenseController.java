@@ -2,14 +2,14 @@ package com.optimagrowth.license.controller;
 
 import com.optimagrowth.license.model.License;
 import com.optimagrowth.license.service.LicenseService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Locale;
-
 @RestController
 @RequestMapping("v1/organisation/{organizationId}/license")
+@Slf4j
 public class LicenseController {
 
     @Autowired
@@ -21,6 +21,7 @@ public class LicenseController {
             @PathVariable("licenseId") Long licenseId
     ) {
         License license = licenseService.getLicense(licenseId, organizationId);
+        log.info("Sleuth info: ");
         return ResponseEntity.ok(license);
     }
 
@@ -53,10 +54,5 @@ public class LicenseController {
                         licenseId
                 )
         );
-    }
-
-    @GetMapping("/hello")
-    public String getHello(@PathVariable("organizationId") String organizationId) {
-        return "Hello, " + organizationId;
     }
 }
